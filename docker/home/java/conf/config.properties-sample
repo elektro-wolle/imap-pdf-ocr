@@ -1,0 +1,31 @@
+# see https://javaee.github.io/javamail/docs/api/com/sun/mail/imap/package-summary.html
+mail.imap.user=scanner
+mail.imap.host=imap.example.org
+mail.imap.port=143
+mail.imap.ssl.enable=false
+mail.imap.starttls.enable=true
+mail.imap.starttls.required=true
+
+mail.event.scope=session
+mail.imap.usesocketchannels=true
+mail.imaps.usesocketchannels=true
+
+
+# see https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
+mail.smtp.user=scanner
+mail.smtp.host=smtp.example.org
+mail.smtp.port=587
+mail.smtp.from="Scanner" <scanner@example.org>
+mail.smtp.auth=true
+mail.smtp.ssl.enable=false
+mail.smtp.starttls.enable=true
+mail.smtp.starttls.required=true
+
+# Passwords
+mail.imap.pass=xxx
+mail.smtp.pass=xxxx
+
+# Forwards
+fwd.default=user@example.org
+fwd.scanner+user1@example.org=user1@example.org
+fwd.scanner+user2@example.org=user2@example.org

@@ -1,0 +1,5 @@
+target
+imap-pdf-ocr.iml
+docker/home/java/conf/config.properties
+target/
+dependency-reduced-pom.xml
