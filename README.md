@@ -20,6 +20,8 @@ fwd.scanner+user2@example.org=real-user2@example.org
 ```
 
 ## Running:
+
+The docker image is available via [docker.hub](https://hub.docker.com/r/wjung/imap-pdf-ocr/). 
 ```
 docker run --rm \
   -v PATH_TO_LOCAL_CONFIG/config.properties:/home/java/conf/config.properties \
