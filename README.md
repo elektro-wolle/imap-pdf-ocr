@@ -1,5 +1,7 @@
 # OCR of scanned PDFs via IMAP/SMTP
 
+[![Build Status](https://travis-ci.org/elektro-wolle/imap-pdf-ocr.svg?branch=develop)](https://travis-ci.org/elektro-wolle/imap-pdf-ocr)
+
 This small project scans an IMAP folder for new messages and converts
 every attached PDF via `ocrmypdf`.
 
