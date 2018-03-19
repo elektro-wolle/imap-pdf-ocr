@@ -47,7 +47,8 @@
                     <imageName>imap-pdf-ocr</imageName>
                     <dockerDirectory>docker</dockerDirectory>
                     <imageTags>
-                        <imageTag>${project.artifactId}:${project.version}</imageTag>
+                        <imageTag>wjung/${project.artifactId}:${project.version}</imageTag>
+                        <imageTag>wjung/${project.artifactId}:latest</imageTag>
                     </imageTags>
                     <resources>
                         <resource>
