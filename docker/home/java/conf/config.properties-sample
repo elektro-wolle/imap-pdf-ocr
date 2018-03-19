@@ -29,3 +29,6 @@ mail.smtp.pass=xxxx
 fwd.default=user@example.org
 fwd.scanner+user1@example.org=user1@example.org
 fwd.scanner+user2@example.org=user2@example.org
+
+# Language
+ocr.lang=deu

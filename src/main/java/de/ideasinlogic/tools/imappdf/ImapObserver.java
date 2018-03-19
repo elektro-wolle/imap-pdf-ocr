@@ -140,8 +140,16 @@ public class ImapObserver {
 
     // PDF is present, start OCR
     File out = File.createTempFile("scan-", ".pdf");
-    ProcessBuilder pb = new ProcessBuilder("ocrmypdf", "-c", "-d", "--remove-background",
-        "-l", "deu", f.getAbsolutePath(), out.getAbsolutePath());
+    ProcessBuilder pb = new ProcessBuilder(
+        "ocrmypdf",
+        "-c",
+        "-d",
+        "--remove-background",
+        "--output-type", "pdf",
+        "--pdf-renderer", "tesseract",
+        "-l", prop.getProperty("ocr.lang", "deu+eng"),
+        f.getAbsolutePath(),
+        out.getAbsolutePath());
     pb.inheritIO();
     Process process = pb.start();
     log.debug("Started OCR process");
