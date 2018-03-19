@@ -240,6 +240,12 @@ public class ImapObserver {
         continue;
       }
       IMAPBodyPart attachment = (IMAPBodyPart) body;
+      if (attachment.getContent() instanceof MimeMultipart) {
+        File f = traverse(attachment.getContent());
+        if (f != null) {
+          return f;
+        }
+      }
       // attachment should be PDF
       if (!attachment.getContentType().startsWith("application/pdf")) {
         continue;
