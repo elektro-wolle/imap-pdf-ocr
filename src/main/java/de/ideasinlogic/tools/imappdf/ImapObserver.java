@@ -144,7 +144,6 @@ public class ImapObserver {
         "ocrmypdf",
         "-c",
         "-d",
-        "--remove-background",
         "--output-type", "pdf",
         "--pdf-renderer", "tesseract",
         "-l", prop.getProperty("ocr.lang", "deu+eng"),
