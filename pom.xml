@@ -44,11 +44,11 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.11</version>
                 <configuration>
-                    <imageName>imap-pdf-ocr</imageName>
+                    <imageName>wjung/imap-pdf-ocr</imageName>
                     <dockerDirectory>docker</dockerDirectory>
                     <imageTags>
-                        <imageTag>wjung/${project.artifactId}:${project.version}</imageTag>
-                        <imageTag>wjung/${project.artifactId}:latest</imageTag>
+                        <imageTag>${project.version}</imageTag>
+                        <imageTag>latest</imageTag>
                     </imageTags>
                     <resources>
                         <resource>
