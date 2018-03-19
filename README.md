@@ -21,7 +21,7 @@ fwd.scanner+user2@example.org=real-user2@example.org
 ```
 docker run --rm \
   -v PATH_TO_LOCAL_CONFIG/config.properties:/home/java/conf/config.properties \
-  wjung/imap-ocr-pdf:latest
+  wjung/imap-pdf-ocr:latest
 ```
 
 ## Sample config:
