@@ -144,8 +144,8 @@ public class ImapObserver {
         "ocrmypdf",
         "-c",
         "-d",
-        "--output-type", "pdf",
-        "--pdf-renderer", "tesseract",
+        // "--output-type", "pdf",
+        // "--pdf-renderer", "tesseract",
         "-l", prop.getProperty("ocr.lang", "deu+eng"),
         f.getAbsolutePath(),
         out.getAbsolutePath());
