@@ -74,7 +74,7 @@ public class SMTPSender {
       try {
         MimeBodyPart attachmentBodyPart = new MimeBodyPart();
         attachmentBodyPart.attachFile(value, "application/pdf", null);
-        attachmentBodyPart.setFileName("scan-" + key);
+        attachmentBodyPart.setFileName("scan-" + tsFile + "-" + key);
         multipart.addBodyPart(attachmentBodyPart);
       } catch (MessagingException | IOException e) {
         log.warn("Can't add file: " + value);

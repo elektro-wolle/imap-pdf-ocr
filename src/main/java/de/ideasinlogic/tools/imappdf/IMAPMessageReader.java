@@ -187,10 +187,15 @@ public class IMAPMessageReader {
         fileMap.putAll(traverse(attachment.getContent()));
         continue;
       }
+
       // attachment should be PDF
+      if (attachment.getFileName() == null) {
+        continue;
+      }
       if (!attachment.getFileName().toLowerCase().endsWith(".pdf")) {
         continue;
       }
+
       log.trace("got pdf=" + attachment.getFileName() + " content=" + attachment.getContent().getClass());
       if (!(attachment.getContent() instanceof InputStream)) {
         continue;
