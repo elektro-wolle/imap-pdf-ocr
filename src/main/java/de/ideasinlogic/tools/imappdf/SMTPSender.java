@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -37,13 +38,15 @@ public class SMTPSender {
   /**
    * Send the file to the recipient associated to the given recipient.
    *
-   * @param recipient  the recipient of the mail
-   * @param scannedPDF PDF file
+   * @param recipient   the recipient of the mail
+   * @param scannedPDFs PDF files
+   * @param subject     Subject of the mail.
    * @throws MessagingException if message could not be sent.
    * @throws IOException        if File could not be read.
    */
-  void sendMail(InternetAddress recipient, File scannedPDF) throws MessagingException, IOException {
-    String ts = MessageFormat.format("{0,date,yyyy.MM.dd-HHmmss}", new Date());
+  void sendMail(InternetAddress recipient, Map<String, File> scannedPDFs, String subject) throws MessagingException, IOException {
+    String tsFile = MessageFormat.format("{0,date,yyyy.MM.dd-HHmmss}", new Date());
+    String tsHeader = MessageFormat.format("[OCR {0,date,yyyy-MM-dd HH:mm:ss}]", new Date());
 
     Transport transport = session.getTransport("smtp");
     transport.connect(prop.getProperty("mail.smtp.user"), prop.getProperty("mail.smtp.pass"));
@@ -58,24 +61,30 @@ public class SMTPSender {
     msg.setEnvelopeFrom(fromAddress.getAddress());
     msg.setRecipient(Message.RecipientType.TO, recipient);
 
-    msg.setSubject(MimeUtility.encodeText("Scanned PDF " + ts, "utf-8", null));
+    msg.setSubject(MimeUtility.encodeText(tsHeader + " " + subject, "utf-8", null));
     msg.setSentDate(new Date());
 
     // encapsulate PDF as mime message
     Multipart multipart = new MimeMultipart();
     MimeBodyPart messageBodyPart = new MimeBodyPart();
-    String message = "See attached PDF " + ts + "\n";
+    String message = "See attached PDFs " + tsFile + "\n";
     messageBodyPart.setText(message, "utf-8", "text");
     multipart.addBodyPart(messageBodyPart);
-    MimeBodyPart attachmentBodyPart = new MimeBodyPart();
-    attachmentBodyPart.attachFile(scannedPDF, "application/pdf", null);
-    attachmentBodyPart.setFileName("scan-" + ts + ".pdf");
-    multipart.addBodyPart(attachmentBodyPart);
+    scannedPDFs.forEach((key, value) -> {
+      try {
+        MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+        attachmentBodyPart.attachFile(value, "application/pdf", null);
+        attachmentBodyPart.setFileName("scan-" + tsFile + "-" + key);
+        multipart.addBodyPart(attachmentBodyPart);
+      } catch (MessagingException | IOException e) {
+        log.warn("Can't add file: " + value);
+      }
+    });
     msg.setContent(multipart);
 
     // send mail
     transport.sendMessage(msg, new Address[]{recipient});
-    log.info("forwarded pdf " + attachmentBodyPart.getFileName() + " to " + recipient);
+    log.info("forwarded pdf with attachments: " + scannedPDFs.keySet() + " to " + recipient);
 
     transport.close();
   }
