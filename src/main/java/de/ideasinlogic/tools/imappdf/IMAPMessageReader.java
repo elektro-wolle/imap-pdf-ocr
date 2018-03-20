@@ -85,6 +85,8 @@ public class IMAPMessageReader {
         return;
       }
 
+      String subject = message.getSubject();
+
       // try to traverse until first PDF is found
       File inputFile = traverse(message.getContent());
       if (inputFile == null) {
@@ -101,12 +103,12 @@ public class IMAPMessageReader {
       InternetAddress fwd = getTargetRecipient(message);
       if (out.isPresent()) {
         File outFile = out.get();
-        smtpSender.sendMail(fwd, outFile);
+        smtpSender.sendMail(fwd, outFile, subject);
         //noinspection ResultOfMethodCallIgnored
         outFile.delete();
       } else {
         log.info("Empty inputFile? Using original instead");
-        smtpSender.sendMail(fwd, inputFile);
+        smtpSender.sendMail(fwd, inputFile, subject);
       }
       //noinspection ResultOfMethodCallIgnored
       inputFile.delete();

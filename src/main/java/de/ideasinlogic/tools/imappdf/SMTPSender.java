@@ -39,11 +39,13 @@ public class SMTPSender {
    *
    * @param recipient  the recipient of the mail
    * @param scannedPDF PDF file
+   * @param subject Subject of the mail.
    * @throws MessagingException if message could not be sent.
    * @throws IOException        if File could not be read.
    */
-  void sendMail(InternetAddress recipient, File scannedPDF) throws MessagingException, IOException {
-    String ts = MessageFormat.format("{0,date,yyyy.MM.dd-HHmmss}", new Date());
+  void sendMail(InternetAddress recipient, File scannedPDF, String subject) throws MessagingException, IOException {
+    String tsFile = MessageFormat.format("{0,date,yyyy.MM.dd-HHmmss}", new Date());
+    String tsHeader = MessageFormat.format("[OCR {0,date,yyyy-MM-dd HH:mm:ss}]", new Date());
 
     Transport transport = session.getTransport("smtp");
     transport.connect(prop.getProperty("mail.smtp.user"), prop.getProperty("mail.smtp.pass"));
@@ -58,18 +60,18 @@ public class SMTPSender {
     msg.setEnvelopeFrom(fromAddress.getAddress());
     msg.setRecipient(Message.RecipientType.TO, recipient);
 
-    msg.setSubject(MimeUtility.encodeText("Scanned PDF " + ts, "utf-8", null));
+    msg.setSubject(MimeUtility.encodeText(tsHeader + " " + subject, "utf-8", null));
     msg.setSentDate(new Date());
 
     // encapsulate PDF as mime message
     Multipart multipart = new MimeMultipart();
     MimeBodyPart messageBodyPart = new MimeBodyPart();
-    String message = "See attached PDF " + ts + "\n";
+    String message = "See attached PDF " + tsFile + "\n";
     messageBodyPart.setText(message, "utf-8", "text");
     multipart.addBodyPart(messageBodyPart);
     MimeBodyPart attachmentBodyPart = new MimeBodyPart();
     attachmentBodyPart.attachFile(scannedPDF, "application/pdf", null);
-    attachmentBodyPart.setFileName("scan-" + ts + ".pdf");
+    attachmentBodyPart.setFileName("scan-" + tsFile + ".pdf");
     multipart.addBodyPart(attachmentBodyPart);
     msg.setContent(multipart);
 
