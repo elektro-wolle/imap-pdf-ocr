@@ -18,8 +18,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 
 /**
@@ -51,6 +54,10 @@ public class IMAPMessageReader {
       log.trace("ignore deleted message");
       return false;
     }
+    if (message.getFlags().contains(Flags.Flag.SEEN)) {
+      log.trace("ignore seen message");
+      return false;
+    }
     if (message.getFrom() == null || message.getFrom().length == 0) {
       log.trace("ignore message without sender");
       return false;
@@ -63,6 +70,7 @@ public class IMAPMessageReader {
       return false;
     }
     log.info("loaded message " + message.getMessageNumber() + " rcpt=" + recipients[0].toString());
+    message.setFlag(Flags.Flag.SEEN, true);
 
     return true;
   }
@@ -73,9 +81,8 @@ public class IMAPMessageReader {
    * @param message a message to process.
    * @throws MessagingException   if message could not be read or sent.
    * @throws IOException          if data could not be read
-   * @throws InterruptedException if OCR is interrupted
    */
-  void handleMessage(IMAPMessage message) throws MessagingException, IOException, InterruptedException {
+  void handleMessage(IMAPMessage message) throws MessagingException, IOException {
     try {
       MDC.put(MESSAGE_ID, message.getMessageID());
 
@@ -87,33 +94,43 @@ public class IMAPMessageReader {
 
       String subject = message.getSubject();
 
-      // try to traverse until first PDF is found
-      File inputFile = traverse(message.getContent());
-      if (inputFile == null) {
-        log.info("no inputFile present, aborting");
+      // try to traverse all PDFs
+      Map<String, File> inputFiles = traverse(message.getContent());
+      if (inputFiles.isEmpty()) {
+        log.info("no inputFiles present, aborting");
         message.setFlag(Flags.Flag.DELETED, true);
         return;
       }
 
       String lang = prop.getProperty("ocr.lang", "deu+eng");
+
       // PDF is present, start OCR
-      Optional<File> out = ocr.runOCR(inputFile, lang);
+      //noinspection ConstantConditions
+      Map<String, File> outFiles = inputFiles
+          .entrySet()
+          .parallelStream()
+          .collect(Collectors.toMap(
+              Map.Entry::getKey,
+              e -> ocr.runOCR(e.getValue(), lang)
+          ))
+          .entrySet()
+          .stream()
+          .filter(e -> e.getValue().isPresent())
+          .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get()));
 
       // send to target
       InternetAddress fwd = getTargetRecipient(message);
-      if (out.isPresent()) {
-        File outFile = out.get();
-        smtpSender.sendMail(fwd, outFile, subject);
-        //noinspection ResultOfMethodCallIgnored
-        outFile.delete();
-      } else {
+      if (outFiles.isEmpty()) {
         log.info("Empty inputFile? Using original instead");
-        smtpSender.sendMail(fwd, inputFile, subject);
+        smtpSender.sendMail(fwd, inputFiles, subject);
+      } else {
+        smtpSender.sendMail(fwd, outFiles, subject);
+        //noinspection ResultOfMethodCallIgnored
+        outFiles.values().forEach(File::delete);
       }
       //noinspection ResultOfMethodCallIgnored
-      inputFile.delete();
+      inputFiles.values().forEach(File::delete);
       message.setFlag(Flags.Flag.DELETED, true);
-
     } finally {
       MDC.remove(MESSAGE_ID);
     }
@@ -149,12 +166,13 @@ public class IMAPMessageReader {
    * @throws MessagingException if message could not be opened.
    * @throws IOException        if message could not be read.
    */
-  private File traverse(Object content) throws MessagingException, IOException {
+  private Map<String, File> traverse(Object content) throws MessagingException, IOException {
     log.trace("got content=" + content.getClass());
     // original mail must be multipart
     if (!(content instanceof MimeMultipart)) {
-      return null;
+      return Collections.emptyMap();
     }
+    Map<String, File> fileMap = new HashMap<>();
     // check every part.
     MimeMultipart part = (MimeMultipart) content;
     for (int i = 0; i < part.getCount(); i++) {
@@ -166,15 +184,18 @@ public class IMAPMessageReader {
       }
       IMAPBodyPart attachment = (IMAPBodyPart) body;
       if (attachment.getContent() instanceof MimeMultipart) {
-        File f = traverse(attachment.getContent());
-        if (f != null) {
-          return f;
-        }
-      }
-      // attachment should be PDF
-      if (!attachment.getContentType().startsWith("application/pdf")) {
+        fileMap.putAll(traverse(attachment.getContent()));
         continue;
       }
+
+      // attachment should be PDF
+      if (attachment.getFileName() == null) {
+        continue;
+      }
+      if (!attachment.getFileName().toLowerCase().endsWith(".pdf")) {
+        continue;
+      }
+
       log.trace("got pdf=" + attachment.getFileName() + " content=" + attachment.getContent().getClass());
       if (!(attachment.getContent() instanceof InputStream)) {
         continue;
@@ -190,12 +211,11 @@ public class IMAPMessageReader {
           }
           fos.close();
           log.trace("wrote pdf=" + attachment.getFileName() + " to file " + file);
-
-          return file;
+          fileMap.put(attachment.getFileName(), file);
         }
       }
     }
-    return null;
+    return fileMap;
   }
 
 }
