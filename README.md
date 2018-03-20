@@ -19,7 +19,11 @@ fwd.scanner+user1@example.org=real-user1@example.org
 fwd.scanner+user2@example.org=real-user2@example.org
 ```
 
+**WARNING**: This tool deletes **every** mail in the inbox after processing (if possible). So **please** use a dedicated imap-account for this.
+
 ## Running:
+
+The docker image is available via [docker.hub](https://hub.docker.com/r/wjung/imap-pdf-ocr/). 
 ```
 docker run --rm \
   -v PATH_TO_LOCAL_CONFIG/config.properties:/home/java/conf/config.properties \
