@@ -35,10 +35,11 @@ public class IMAPMessageReader {
   private final Properties prop;
   private final OCRWrapper ocr = new OCRWrapper();
   private final SMTPSender smtpSender;
-
+  private final boolean deleteAfterProcessing;
   IMAPMessageReader(Session session, Properties prop) {
     this.prop = prop;
     smtpSender = new SMTPSender(session, prop);
+    deleteAfterProcessing = Boolean.valueOf(prop.getProperty("deleteAfterProcessing", "false"));
   }
 
   /**
@@ -88,7 +89,7 @@ public class IMAPMessageReader {
 
       // sender, recipient given?
       if (!shouldHandleMessage(message)) {
-        message.setFlag(Flags.Flag.DELETED, true);
+        message.setFlag(Flags.Flag.DELETED, deleteAfterProcessing);
         return;
       }
 
@@ -98,7 +99,7 @@ public class IMAPMessageReader {
       Map<String, File> inputFiles = traverse(message.getContent());
       if (inputFiles.isEmpty()) {
         log.info("no inputFiles present, aborting");
-        message.setFlag(Flags.Flag.DELETED, true);
+        message.setFlag(Flags.Flag.DELETED, deleteAfterProcessing);
         return;
       }
 
@@ -130,7 +131,7 @@ public class IMAPMessageReader {
       }
       //noinspection ResultOfMethodCallIgnored
       inputFiles.values().forEach(File::delete);
-      message.setFlag(Flags.Flag.DELETED, true);
+      message.setFlag(Flags.Flag.DELETED, deleteAfterProcessing);
     } finally {
       MDC.remove(MESSAGE_ID);
     }

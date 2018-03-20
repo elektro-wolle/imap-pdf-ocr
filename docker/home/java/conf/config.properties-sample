@@ -32,3 +32,6 @@ fwd.scanner+user2@example.org=user2@example.org
 
 # Language
 ocr.lang=deu
+
+# delete messages after processing
+deleteAfterProcessing=true
