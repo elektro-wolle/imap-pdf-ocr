@@ -13,8 +13,7 @@ For multiple users, the IMAP-Folder may be used with `user+sub`-addresses like:
 in the configuration file `/home/java/conf/config.properties`, these can be used to define new 
 target addresses for the ocr-ed PDFs:
 
-```properties 
-fwd.default=another-user@example.org
+``` 
 fwd.scanner+user1@example.org=real-user1@example.org
 fwd.scanner+user2@example.org=real-user2@example.org
 ```
@@ -24,6 +23,7 @@ fwd.scanner+user2@example.org=real-user2@example.org
 ## Running:
 
 The docker image is available via [docker.hub](https://hub.docker.com/r/wjung/imap-pdf-ocr/). 
+
 ```
 docker run --rm \
   -v PATH_TO_LOCAL_CONFIG/config.properties:/home/java/conf/config.properties \
@@ -31,6 +31,7 @@ docker run --rm \
 ```
 
 ## Sample config:
+
 ```
 # see https://javaee.github.io/javamail/docs/api/com/sun/mail/imap/package-summary.html
 mail.imap.user=scanner
@@ -66,4 +67,7 @@ fwd.scanner+user2@example.org=user2@example.org
 
 # Language
 ocr.lang=deu
+
+# delete messages after processing
+deleteAfterProcessing=true
 ```

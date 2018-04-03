@@ -193,7 +193,12 @@ public class IMAPMessageReader {
       if (attachment.getFileName() == null) {
         continue;
       }
-      if (!attachment.getFileName().toLowerCase().endsWith(".pdf")) {
+      String extension = attachment.getFileName().toLowerCase().replaceAll("^.*\\.([a-z]*?)$", "$1");
+      if (!extension.equals("pdf") &&
+          !extension.equals("png") &&
+          !extension.equals("jpg") &&
+          !extension.equals("jpeg")) {
+        log.debug("unknown extension: " + extension);
         continue;
       }
 
