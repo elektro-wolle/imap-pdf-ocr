@@ -7,4 +7,11 @@ OCR_LANG="$1"
 OCR_INPUT="$2"
 OCR_OUTPUT="$3"
 
-ocrmypdf -c -d -l "${OCR_LANG}" "${OCR_INPUT}"  "${OCR_OUTPUT}"
+TMPFILE=/tmp/tmp-$$.pdf
+_cleanUp() {
+  rm "${TMPFILE}"
+}
+trap _cleanUp EXIT
+
+ocrmypdf -c -d -l "${OCR_LANG}" "${OCR_INPUT}" "${TMPFILE}"
+ps2pdf -dPDFSETTINGS=/screen  -dLanguageLevel=4 "${TMPFILE}" "${OCR_OUTPUT}"
