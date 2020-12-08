@@ -10,6 +10,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>private</id>
+            <url>https://nexus.wolle.dev/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>private-snapshot</id>
+            <url>https://nexus.wolle.dev/repository/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -25,6 +35,10 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId></groupId>
+            <artifactId>xa</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -42,16 +56,16 @@
                     <dependency>
                         <groupId>com.jcraft</groupId>
                         <artifactId>jsch</artifactId>
-                        <version>0.1.53</version>
+                        <version>0.1.55</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.11</version>
+                <version>1.2.1</version>
                 <configuration>
-                    <imageName>wjung/imap-pdf-ocr</imageName>
+                    <imageName>repo.wolle.dev/tools/imap-pdf-ocr</imageName>
                     <dockerDirectory>docker</dockerDirectory>
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
@@ -70,7 +84,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

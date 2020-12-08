@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM ubuntu:latest
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN apt-get update && \
@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get autoremove && \
     apt-get clean
 
-RUN apt-get -y install tesseract-ocr-all
+# RUN apt-get -y install tesseract-ocr-all
 
 RUN useradd -m java
 ADD home/java/ /home/java/

@@ -56,7 +56,7 @@ public class IMAPMessageReader {
       return false;
     }
     if (message.getFlags().contains(Flags.Flag.SEEN)) {
-      log.trace("ignore seen message");
+      // log.trace("ignore seen message");
       return false;
     }
     if (message.getFrom() == null || message.getFrom().length == 0) {
