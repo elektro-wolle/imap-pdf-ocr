@@ -33,7 +33,7 @@ public class ImapObserver {
 
   private ImapObserver() throws IOException {
     prop = new Properties();
-    try (InputStream fis = new FileInputStream("conf/config.properties")) {
+    try (InputStream fis = getClass().getClassLoader().getResourceAsStream("config.properties")) {
       prop.load(fis);
     }
     prop.put("mail.event.executor", imapListenerExecutor);

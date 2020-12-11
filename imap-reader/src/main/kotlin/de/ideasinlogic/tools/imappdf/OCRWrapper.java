@@ -24,7 +24,7 @@ public class OCRWrapper {
     try {
       File output = File.createTempFile("scan-", ".pdf");
       ProcessBuilder pb = new ProcessBuilder(
-          "/home/java/runocr.sh",
+          "runocr.sh",
           // "--output-type", "pdf",
           // "--pdf-renderer", "tesseract",
           lang,
