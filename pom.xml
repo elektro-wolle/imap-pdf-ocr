@@ -13,5 +13,6 @@
     <modules>
         <module>tesseract-ocr</module>
         <module>imap-reader</module>
+        <module>pdf-classifier</module>
     </modules>
 </project>
