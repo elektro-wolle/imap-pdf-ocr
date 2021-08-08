@@ -17,14 +17,7 @@ build:
     only:
         refs:
             - tags
+            - branches
     except:
         refs:
             - master
-
-build:
-    stage: build
-    script:
-        - mvn $MAVEN_CLI_OPTS $ADDITIONAL_MAVEN_OPTS install
-    except:
-        refs:
-            - tags
