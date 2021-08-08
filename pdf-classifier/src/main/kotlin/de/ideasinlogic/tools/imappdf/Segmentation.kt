@@ -19,7 +19,7 @@ class Segmentation(
 		while (range.contains(left + 1) && hist[left] / max < whiteSpaceMax) {
 			left++
 		}
-		while (range.contains(right - 2) && hist[right-1] / max < whiteSpaceMax) {
+		while (range.contains(right - 2) && hist[right - 1] / max < whiteSpaceMax) {
 			right--
 		}
 		if (max < 1 || right - left <= minSize) {
@@ -40,10 +40,10 @@ class Segmentation(
 			}
 
 			if (sliceAt > minSize + left && sliceAt < right - minSize && slices[sliceAt] >= minWhiteSpaceRun) {
-				log.trace { "spliced $range into $left,$sliceAt,$right run=${slices[sliceAt]} "}
+				log.trace { "spliced $range into $left,$sliceAt,$right run=${slices[sliceAt]} " }
 				return Pair(left..right, listOf(left until sliceAt, sliceAt..right))
 			}
-			log.trace { "$range trimmed to $left,$right run=${slices[sliceAt]}"}
+			log.trace { "$range trimmed to $left,$right run=${slices[sliceAt]}" }
 			return Pair(left..right, emptyList())
 		}
 	}
