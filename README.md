@@ -1,34 +1,38 @@
 # OCR of scanned PDFs via IMAP/SMTP
 
-[![Build Status](https://travis-ci.org/elektro-wolle/imap-pdf-ocr.svg?branch=develop)](https://travis-ci.org/elektro-wolle/imap-pdf-ocr)
-
-This small project scans an IMAP folder for new messages and converts
-every attached PDF via `ocrmypdf`.
+This small project scans an IMAP folder for new messages and converts every attached PDF via `ocrmypdf`.
 
 For multiple users, the IMAP-Folder may be used with `user+sub`-addresses like:
 
 * scanner+user1@example.org
 * scanner+user2@example.org
 
-in the configuration file `/home/java/conf/config.properties`, these can be used to define new 
-target addresses for the ocr-ed PDFs:
+in the configuration file `/app/resources/config.properties`, these can be used to define new target addresses for the
+ocr-ed PDFs:
 
 ``` 
 fwd.scanner+user1@example.org=real-user1@example.org
 fwd.scanner+user2@example.org=real-user2@example.org
 ```
 
-**WARNING**: This tool deletes **every** mail in the inbox after processing (if possible). So **please** use a dedicated imap-account for this.
+**WARNING**: This tool deletes **every** mail in the inbox after processing (if possible). So **please** use a dedicated
+imap-account for this.
 
 ## Running:
 
-The docker image is available via [docker.hub](https://hub.docker.com/r/wjung/imap-pdf-ocr/). 
+The docker image is available via [docker.hub](https://hub.docker.com/r/wjung/imap-pdf-ocr/).
 
 ```
 docker run --rm \
-  -v PATH_TO_LOCAL_CONFIG/config.properties:/home/java/conf/config.properties \
+  -v PATH_TO_LOCAL_CONFIG/config.properties:/app/resources/config.properties \
   wjung/imap-pdf-ocr:latest
 ```
+
+The optional environment variable `PDF_QUALITY` can be use to rescale the result pdf. (
+See https://tex.stackexchange.com/questions/6121/presentation-option-screen-or-prepress-in-ps2pdf#6127). Defaults
+to `/ebook`.
+
+If set to `none`, no downsampling will occur.
 
 ## Sample config:
 

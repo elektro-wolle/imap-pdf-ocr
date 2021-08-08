@@ -1,0 +1,23 @@
+image: maven:3-jdk-11
+
+variables:
+    MAVEN_CLI_OPTS: "-Dmaven.repo.local=.m2/repository -s .m2/settings.xml --batch-mode "
+
+stages:
+    - build
+
+cache:
+    paths:
+        - .m2/repository/
+
+build:
+    stage: build
+    script:
+        - mvn $MAVEN_CLI_OPTS $ADDITIONAL_MAVEN_OPTS deploy
+    only:
+        refs:
+            - tags
+            - branches
+    except:
+        refs:
+            - master
