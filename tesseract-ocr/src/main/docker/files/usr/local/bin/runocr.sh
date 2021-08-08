@@ -13,5 +13,14 @@ _cleanUp() {
 }
 trap _cleanUp EXIT
 
-ocrmypdf -c -d -l "${OCR_LANG}" --tesseract-oem 1 --tesseract-pagesegmode 3 "${OCR_INPUT}" "${TMPFILE}"
-ps2pdf -dPDFSETTINGS=/ebook -dLanguageLevel=4 "${TMPFILE}" "${OCR_OUTPUT}"
+if [[ -z "${PDF_QUALITY}" ]]; then
+	PDF_QUALITY="/ebook"
+fi
+
+/usr/bin/ocrmypdf -c -d -l "${OCR_LANG}" --tesseract-oem 1 --tesseract-pagesegmode 3 "${OCR_INPUT}" "${TMPFILE}"
+
+if [[ "${PDF_QUALITY}" = "none" ]]; then
+	mv "${TMPFILE}" "${OCR_OUTPUT}"
+else
+	ps2pdf "-dPDFSETTINGS=${PDF_QUALITY}" -dLanguageLevel=4 "${TMPFILE}" "${OCR_OUTPUT}"
+fi

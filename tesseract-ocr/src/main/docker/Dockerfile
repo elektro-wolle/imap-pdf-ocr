@@ -2,7 +2,7 @@ FROM ubuntu:latest
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN apt-get update && \
-    apt-get -y install openjdk-11-jre ocrmypdf tesseract-ocr-deu imagemagick ghostscript wget && \
+    apt-get --no-install-recommends -y install openjdk-11-jre-headless ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
     apt-get autoclean && \
     apt-get autoremove && \
     apt-get clean
