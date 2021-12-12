@@ -9,7 +9,7 @@ RUN apt-get update && \
 
 ARG LANG="deu eng"
 RUN for x in $LANG; do \
-       wget -q https://github.com/tesseract-ocr/tessdata_best/blob/master/${x}.traineddata\?raw=true \
+       wget -q https://github.com/tesseract-ocr/tessdata_best/blob/main/${x}.traineddata\?raw=true \
             -O /usr/share/tesseract-ocr/4.00/tessdata/${x}.traineddata; \
     done
 
