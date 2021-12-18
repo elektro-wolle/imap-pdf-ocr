@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>de.ideasinlogic.tools</groupId>
 		<artifactId>imap-pdf-ocr</artifactId>
-		<version>2.2.1</version>
+		<version>2.3.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,23 +17,13 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>imap</artifactId>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
 			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.mail</groupId>
-			<artifactId>mailapi</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>smtp</artifactId>
+			<artifactId>jakarta.mail</artifactId>
 			<version>2.0.1</version>
 		</dependency>
 	</dependencies>
@@ -60,6 +50,7 @@
 					</from>
 					<container>
 						<user>java</user>
+						<mainClass>de.ideasinlogic.tools.imappdf.ImapObserver</mainClass>
 					</container>
 				</configuration>
 			</plugin>

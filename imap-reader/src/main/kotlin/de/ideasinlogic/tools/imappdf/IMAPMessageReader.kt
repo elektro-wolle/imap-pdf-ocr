@@ -9,7 +9,7 @@ import jakarta.mail.internet.InternetAddress
 import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMessage
 import jakarta.mail.internet.MimeMultipart
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.slf4j.MDC
 import java.io.File
 import java.io.FileOutputStream
@@ -145,7 +145,7 @@ class IMAPMessageReader internal constructor(session: Session, private val prop:
 	 */
 	@Throws(MessagingException::class, IOException::class)
 	private fun traverse(content: Any): Map<String, File> {
-		log.trace("got content=" + content.javaClass)
+		log.trace { "got content=" + content.javaClass }
 		// original mail must be multipart
 		if (content !is MimeMultipart) {
 			return emptyMap()
@@ -155,7 +155,7 @@ class IMAPMessageReader internal constructor(session: Session, private val prop:
 		val part = content
 		for (i in 0 until part.count) {
 			val body = part.getBodyPart(i)
-			log.trace("got body part " + body.javaClass + " with content=" + body.contentType + " reader=" + body.content.javaClass)
+			log.trace { "got body part " + body.javaClass + " with content=" + body.contentType + " reader=" + body.content.javaClass }
 			// parts should be IMAPBodyPart
 			if (body !is MimeBodyPart) {
 				continue
@@ -178,16 +178,16 @@ class IMAPMessageReader internal constructor(session: Session, private val prop:
 				extension != "jpg" &&
 				extension != "jpeg"
 			) {
-				log.debug("unknown extension: $extension")
+				log.debug { "unknown extension: $extension" }
 				continue
 			}
-			log.trace("got pdf=" + attachment.fileName + " content=" + partContent.javaClass)
+			log.trace { "got pdf=" + attachment.fileName + " content=" + partContent.javaClass }
 			when (partContent) {
 				is InputStream -> partContent.use { inputStream ->
 					val file = File.createTempFile("scan-", ".pdf")
 					FileOutputStream(file).use { fos ->
 						inputStream.copyTo(fos)
-						log.trace("wrote pdf=" + attachment.fileName + " to file " + file)
+						log.trace { "wrote pdf=" + attachment.fileName + " to file " + file }
 						fileMap.put(attachment.fileName, file)
 					}
 				}
@@ -199,7 +199,7 @@ class IMAPMessageReader internal constructor(session: Session, private val prop:
 
 	companion object {
 		private const val MESSAGE_ID = "messageID"
-		private val log = LoggerFactory.getLogger(IMAPMessageReader::class.java)
+		private val log = KotlinLogging.logger { }
 	}
 
 	init {

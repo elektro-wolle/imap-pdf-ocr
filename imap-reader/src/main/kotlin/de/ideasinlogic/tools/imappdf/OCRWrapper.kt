@@ -1,6 +1,6 @@
 package de.ideasinlogic.tools.imappdf
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 
@@ -26,25 +26,25 @@ class OCRWrapper {
 			)
 			pb.inheritIO()
 			val process = pb.start()
-			log.debug("Started OCR process")
+			log.debug { "Started OCR process" }
 			val waitFor = process.waitFor()
 			if (waitFor != 0) {
-				log.warn("failed to process $waitFor")
+				log.warn { "failed to process $waitFor" }
 				output.delete()
 				return null
 			}
-			log.debug("finished process " + waitFor + " and created file " + output.absolutePath)
+			log.debug { "finished process " + waitFor + " and created file " + output.absolutePath }
 			output
 		} catch (e: InterruptedException) {
-			log.debug("failure during processing " + input.absolutePath)
+			log.debug { "failure during processing " + input.absolutePath }
 			return null
 		} catch (e: IOException) {
-			log.debug("failure during processing " + input.absolutePath)
+			log.debug { "failure during processing " + input.absolutePath }
 			return null
 		}
 	}
 
 	companion object {
-		private val log = LoggerFactory.getLogger(OCRWrapper::class.java)
+		private val log = KotlinLogging.logger { }
 	}
 }
