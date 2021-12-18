@@ -3,13 +3,13 @@ package de.ideasinlogic.tools.imappdf
 
 import com.sun.mail.imap.IMAPFolder
 import com.sun.mail.imap.IMAPMessage
-import com.sun.mail.imap.IMAPStore
 import com.sun.mail.imap.IdleManager
 import jakarta.mail.MessagingException
 import jakarta.mail.Session
 import jakarta.mail.event.MessageCountAdapter
 import jakarta.mail.event.MessageCountEvent
-import org.slf4j.LoggerFactory
+import jakarta.mail.internet.MimeMessage
+import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -37,11 +37,11 @@ class ImapObserver private constructor(pathToConfig: File?) {
 	@Throws(MessagingException::class, IOException::class, InterruptedException::class)
 	private fun run() {
 		// open the inbox
-		val store = session.getStore("imap") as IMAPStore
+		val store = session.getStore("imap")
 		store.connect(prop.getProperty("mail.imap.user"), prop.getProperty("mail.imap.pass"))
-		val inbox = store.getFolder("INBOX") as IMAPFolder
+		val inbox = store.getFolder("INBOX")
 		inbox.open(IMAPFolder.READ_WRITE)
-		log.debug("opened INBOX with " + inbox.messageCount + " messages")
+		log.debug { "opened INBOX with " + inbox.messageCount + " messages" }
 		// handle all current messages
 		for (i in 1..inbox.messageCount) {
 			imapMessageReader.handleMessage((inbox.getMessage(i) as IMAPMessage))
@@ -51,19 +51,19 @@ class ImapObserver private constructor(pathToConfig: File?) {
 		val idleManager = IdleManager(session, imapListenerExecutor)
 		inbox.addMessageCountListener(object : MessageCountAdapter() {
 			override fun messagesAdded(mce: MessageCountEvent) {
-				log.trace("new messages arrived")
+				log.trace { "new messages arrived" }
 				for (m in mce.messages) {
 					try {
-						imapMessageReader.handleMessage((m as IMAPMessage))
+						imapMessageReader.handleMessage(m as MimeMessage)
 					} catch (e: Exception) {
-						log.warn("Failed to handle message: $e", e)
+						log.warn(e) { "Failed to handle message: $e" }
 					}
 				}
 				try {
 					// listen on new messages
 					idleManager.watch(inbox)
 				} catch (e: Exception) {
-					log.warn("Failed to restart idle: $e", e)
+					log.warn(e) { "Failed to restart idle: $e" }
 				}
 			}
 		})
@@ -76,7 +76,7 @@ class ImapObserver private constructor(pathToConfig: File?) {
 	}
 
 	companion object {
-		private val log = LoggerFactory.getLogger(ImapObserver::class.java)
+		private val log = KotlinLogging.logger { }
 
 		@Throws(Exception::class)
 		@JvmStatic
@@ -86,7 +86,7 @@ class ImapObserver private constructor(pathToConfig: File?) {
 				try {
 					o.run()
 				} catch (ex: InterruptedException) {
-					log.info("Interrupted, exiting")
+					log.info { "Interrupted, exiting" }
 					System.exit(0)
 				}
 			}

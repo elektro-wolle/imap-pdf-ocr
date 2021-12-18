@@ -1,18 +1,18 @@
 package de.ideasinlogic.tools.imappdf
 
 import com.sun.mail.smtp.SMTPMessage
+import jakarta.activation.CommandMap
+import jakarta.activation.MailcapCommandMap
 import jakarta.mail.*
 import jakarta.mail.internet.InternetAddress
 import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMultipart
 import jakarta.mail.internet.MimeUtility
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 import java.text.MessageFormat
 import java.util.*
-import javax.activation.CommandMap
-import javax.activation.MailcapCommandMap
 
 
 /**
@@ -78,11 +78,11 @@ class SMTPSender internal constructor(private val session: Session, private val 
 
 		// send mail
 		transport.sendMessage(msg, arrayOf<Address>(recipient))
-		log.info("forwarded pdf with attachments: " + scannedPDFs.keys + " to " + recipient)
+		log.info { "forwarded pdf with attachments: " + scannedPDFs.keys + " to " + recipient }
 		transport.close()
 	}
 
 	companion object {
-		private val log = LoggerFactory.getLogger(SMTPSender::class.java)
+		private val log = KotlinLogging.logger { }
 	}
 }
