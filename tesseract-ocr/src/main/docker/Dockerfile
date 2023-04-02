@@ -1,4 +1,4 @@
-FROM docker.wolle.dev/ubuntu:latest
+FROM docker.wolle.dev/ubuntu:bionic
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN apt-get update && \
