@@ -2,8 +2,9 @@ FROM docker.wolle.dev/ubuntu:bionic
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN apt-get update && \
-    apt-get --no-install-recommends -y install openjdk-17-jre-headless ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
-    apt-get upgrade && \
+    apt-get -y upgrade && \
+    apt-get install -y openjdk-17-jre-headless ca-certificates-java && \
+    apt-get --no-install-recommends -y install ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
     apt-get autoclean && \
     apt-get autoremove && \
     apt-get clean
