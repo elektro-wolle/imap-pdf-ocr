@@ -1,8 +1,9 @@
-FROM ubuntu:latest
+FROM docker.wolle.dev/ubuntu:latest
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN apt-get update && \
-    apt-get --no-install-recommends -y install openjdk-11-jre-headless ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
+    apt-get --no-install-recommends -y install openjdk-17-jre-headless ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
+    apt-get upgrade && \
     apt-get autoclean && \
     apt-get autoremove && \
     apt-get clean
