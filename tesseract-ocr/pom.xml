@@ -23,6 +23,7 @@
                             <name>repo.wolle.dev/wjung/tesseract-ocr</name>
                         </image>
                     </images>
+                    <verbose>all</verbose>
                 </configuration>
                 <executions>
                     <execution>
