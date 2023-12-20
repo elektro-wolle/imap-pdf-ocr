@@ -17,7 +17,7 @@ if [[ -z "${PDF_QUALITY}" ]]; then
 	PDF_QUALITY="/ebook"
 fi
 
-/usr/bin/ocrmypdf -c -d -l "${OCR_LANG}" --tesseract-oem 1 --tesseract-pagesegmode 3 "${OCR_INPUT}" "${TMPFILE}"
+/usr/bin/ocrmypdf -c -d -r --no-progress-bar -l "${OCR_LANG}" "${OCR_INPUT}" "${TMPFILE}"
 
 if [[ "${PDF_QUALITY}" = "none" ]]; then
 	mv "${TMPFILE}" "${OCR_OUTPUT}"

@@ -1,19 +1,15 @@
-FROM docker.wolle.dev/ubuntu:bionic
+FROM docker.wolle.dev/ubuntu:mantic
 LABEL maintainer="docker@elektrowolle.de"
 
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    export TZ=Etc/UTC && \
+    apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y openjdk-17-jre-headless ca-certificates-java && \
-    apt-get --no-install-recommends -y install ocrmypdf tesseract-ocr-deu imagemagick ghostscript unpaper wget  && \
+    apt-get -y install tzdata openjdk-17-jre-headless ca-certificates-java && \
+    apt-get --no-install-recommends -y install ocrmypdf tesseract-ocr-deu tesseract-ocr-eng imagemagick ghostscript unpaper wget  && \
     apt-get autoclean && \
     apt-get autoremove && \
     apt-get clean
-
-ARG LANG="deu eng"
-RUN for x in $LANG; do \
-       wget -q https://github.com/tesseract-ocr/tessdata_best/blob/main/${x}.traineddata\?raw=true \
-            -O /usr/share/tesseract-ocr/4.00/tessdata/${x}.traineddata; \
-    done
 
 ADD files/ /
 RUN useradd -m -d /app java && \
