@@ -1,4 +1,4 @@
-FROM docker.wolle.dev/ubuntu:mantic
+FROM docker.wolle.dev/ubuntu:mantic@sha256:8d093e0651575a6437cc4a3d561f892a345d263aeac6156ef378fe6a4ccabd4c
 LABEL maintainer="docker@elektrowolle.de"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
